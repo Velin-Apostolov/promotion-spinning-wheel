@@ -23,7 +23,7 @@ const SpinningWheel = () => {
 
   const [hasSpun, setHasSpun] = useState(() => {
     const storedValue = Cookies.get('hasSpun');
-    return storedValue ? storedValue : false;
+    return storedValue === 'true'; // Convert string to boolean
   });
 
   const [currentPrize, setCurrentPrize] = useState(() => {
@@ -40,34 +40,42 @@ const SpinningWheel = () => {
     if (!mustSpin && !hasSpun) {
       const newPrizeNumber = Math.floor(Math.random() * data.length);
       setPrizeNumber(newPrizeNumber);
-      Cookies.set('prizeNumber', newPrizeNumber, { expires: 14 })
       setCurrentPrize(data[newPrizeNumber].option);
-      setHasSpun(true);
       setMustSpin(true);
+      setHasSpun(true);
       const expiry = new Date();
       expiry.setDate(expiry.getDate() + 14);
       setExpiryDate(expiry);
     }
   };
+
+  const handleStopSpinning = () => {
+    setMustSpin(false);
+    setShowResult(true);
+    const expiry = new Date();
+    expiry.setDate(expiry.getDate() + 14);
+    Cookies.set('prizeNumber', prizeNumber, { expires: 14 });
+    Cookies.set('expiryDate', expiry.toISOString(), { expires: 14 });
+    Cookies.set('hasSpun', 'true', { expires: 14 });
+    Cookies.set('currentPrize', currentPrize, { expires: 14 });
+  };
+
   return (
     <>
       <Wheel
         mustStartSpinning={mustSpin}
         prizeNumber={prizeNumber}
         data={data}
-        onStopSpinning={() => {
-          setMustSpin(false);
-          setShowResult(true);
-          Cookies.set('expiryDate', expiryDate, { expires: 14 });
-          Cookies.set('hasSpun', hasSpun, { expires: 14 });
-          Cookies.set('currentPrize', currentPrize, { expires: 14 });
-        }}
+        onStopSpinning={handleStopSpinning}
       />
-      <button onClick={handleSpinClick} disabled={hasSpun ? true : false}>SPIN</button>
+      <button onClick={handleSpinClick} disabled={hasSpun}>SPIN</button>
 
-      {showResult && <>
-        <h1>{currentPrize}</h1> <h2>Expires on: {expiryDate.toDateString()}</h2>
-      </>}
+      {showResult && (
+        <>
+          <h1>{currentPrize}</h1>
+          {expiryDate && <h2>Expires on: {expiryDate.toDateString()}</h2>}
+        </>
+      )}
     </>
   );
 };
