@@ -20,7 +20,7 @@ const SpinningWheel = () => {
     const activeCookie = Cookies.get('currentPrize');
     return activeCookie ? true : false;
   });
-
+  
   const [hasSpun, setHasSpun] = useState(() => {
     const storedValue = Cookies.get('hasSpun');
     return storedValue === 'true'; // Convert string to boolean
