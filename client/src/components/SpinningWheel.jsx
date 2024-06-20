@@ -23,7 +23,7 @@ const SpinningWheel = () => {
   
   const [hasSpun, setHasSpun] = useState(() => {
     const storedValue = Cookies.get('hasSpun');
-    return storedValue === 'true'; // Convert string to boolean
+    return storedValue === 'true';
   });
 
   const [currentPrize, setCurrentPrize] = useState(() => {
@@ -67,6 +67,7 @@ const SpinningWheel = () => {
         prizeNumber={prizeNumber}
         data={data}
         onStopSpinning={handleStopSpinning}
+        startingOptionIndex={prizeNumber}
       />
       <button onClick={handleSpinClick} disabled={hasSpun}>SPIN</button>
 

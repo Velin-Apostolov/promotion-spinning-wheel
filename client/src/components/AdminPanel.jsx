@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
-import coupons from '../coupons/coupons.json'; // Assuming you have a JSON file with coupon data
 
 const AdminPanel = () => {
   const [couponCode, setCouponCode] = useState('');
   const [coupon, setCoupon] = useState(null);
   const [error, setError] = useState('');
+  
+  const [logged, setLogged] = useState(() => {
+    const currentState = localStorage.getItem('logged');
+    return currentState ? true : false;
+  })
 
   const handleCheckCoupon = () => {
     const foundCoupon = coupons.find(c => c.code === couponCode);
