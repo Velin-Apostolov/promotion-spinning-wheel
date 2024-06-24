@@ -22,12 +22,7 @@ const AdminPanel = () => {
   };
 
   const handleMarkAsUsed = () => {
-    if (coupon) {
-      coupon.used = true;
-      // Save the updated coupons data (e.g., update the JSON file or database)
-      // For simplicity, we're just updating the local variable here
-      setCoupon({ ...coupon });
-    }
+    
   };
 
   return (

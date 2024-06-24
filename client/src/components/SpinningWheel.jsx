@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Wheel } from 'react-custom-roulette';
 import Cookies from 'js-cookie';
+import { customAlphabet } from 'nanoid'
 
 const data = [
   { option: 'Free coffee' },
@@ -8,56 +9,67 @@ const data = [
   { option: 'Free cola' },
 ];
 
+const alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+const nanoid = customAlphabet(alphabet, 6);
+
+//// TODO: check for cookies every minute
+
 const SpinningWheel = () => {
   const [mustSpin, setMustSpin] = useState(false);
-  
-  const [prizeNumber, setPrizeNumber] = useState(() => {
-    const storedPrizeNumber = Cookies.get('prizeNumber');
-    return storedPrizeNumber ? Number(storedPrizeNumber) : 0;
+  const [prizeNumber, setPrizeNumber] = useState(0);
+  const [code, setCode] = useState(() => {
+    const storedCode = Cookies.get('promoCode');
+    return storedCode || null;
+  })
+  const [wheelState, setWheelState] = useState(() => {
+    const storedState = Cookies.get('spinningWheelState');
+    return storedState ? JSON.parse(storedState) : { currentPrize: null, hasSpun: false, expiryDate: null };
   });
 
-  const [showResult, setShowResult] = useState(() => {
-    const activeCookie = Cookies.get('currentPrize');
-    return activeCookie ? true : false;
-  });
-  
-  const [hasSpun, setHasSpun] = useState(() => {
-    const storedValue = Cookies.get('hasSpun');
-    return storedValue === 'true';
-  });
+  // Fetch current wheel state
+  const fetchWheelState = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/coupons/status');
+      const data = await response.json();
+      setWheelState(data);
+      Cookies.set('spinningWheelState', JSON.stringify(data), { expires: 14 });
+    } catch (error) {
+      console.error('Error fetching wheel state:', error);
+    }
+  };
 
-  const [currentPrize, setCurrentPrize] = useState(() => {
-    const storedPrize = Cookies.get('currentPrize');
-    return storedPrize ? storedPrize : null;
-  });
-
-  const [expiryDate, setExpiryDate] = useState(() => {
-    const storedExpiryDate = Cookies.get('expiryDate');
-    return storedExpiryDate ? new Date(storedExpiryDate) : null;
-  });
+  // Polling function to check coupon status
+  useEffect(() => {
+    const interval = setInterval(fetchWheelState, 60000); // Poll every minute
+    return () => clearInterval(interval); // Cleanup on unmount
+  }, []);
 
   const handleSpinClick = () => {
-    if (!mustSpin && !hasSpun) {
-      const newPrizeNumber = Math.floor(Math.random() * data.length);
-      setPrizeNumber(newPrizeNumber);
-      setCurrentPrize(data[newPrizeNumber].option);
+    if (!wheelState.hasSpun) {
       setMustSpin(true);
-      setHasSpun(true);
-      const expiry = new Date();
-      expiry.setDate(expiry.getDate() + 14);
-      setExpiryDate(expiry);
     }
   };
 
   const handleStopSpinning = () => {
+    const newPrizeNumber = Math.floor(Math.random() * data.length);
+    setPrizeNumber(newPrizeNumber);
+    const newCurrentPrize = data[newPrizeNumber].option;
+    const newExpiryDate = new Date();
+    newExpiryDate.setDate(newExpiryDate.getDate() + 14);
+    const uniqueCode = nanoid();
+
+    const newWheelState = {
+      currentPrize: newCurrentPrize,
+      hasSpun: true,
+      expiryDate: newExpiryDate.toISOString(),
+    };
+
+    setWheelState(newWheelState);
+    setCode(uniqueCode);
     setMustSpin(false);
-    setShowResult(true);
-    const expiry = new Date();
-    expiry.setDate(expiry.getDate() + 14);
-    Cookies.set('prizeNumber', prizeNumber, { expires: 14 });
-    Cookies.set('expiryDate', expiry.toISOString(), { expires: 14 });
-    Cookies.set('hasSpun', 'true', { expires: 14 });
-    Cookies.set('currentPrize', currentPrize, { expires: 14 });
+    Cookies.set('spinningWheelState', JSON.stringify(newWheelState), { expires: 14 });
+    Cookies.set('promoCode', uniqueCode, { expires: 14 });
   };
 
   return (
@@ -69,12 +81,13 @@ const SpinningWheel = () => {
         onStopSpinning={handleStopSpinning}
         startingOptionIndex={prizeNumber}
       />
-      <button onClick={handleSpinClick} disabled={hasSpun}>SPIN</button>
+      <button onClick={handleSpinClick} disabled={wheelState.hasSpun}>SPIN</button>
 
-      {showResult && (
+      {wheelState.hasSpun && (
         <>
-          <h1>{currentPrize}</h1>
-          {expiryDate && <h2>Expires on: {expiryDate.toDateString()}</h2>}
+          <h1>{wheelState.currentPrize}</h1>
+          {wheelState.expiryDate && <h2>Expires on: {new Date(wheelState.expiryDate).toDateString()}</h2>}
+          <h2>Promo Code: {code}</h2>
         </>
       )}
     </>

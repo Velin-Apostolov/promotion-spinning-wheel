@@ -8,7 +8,7 @@ const app = express();
 
 const corsOptions = {
     origin: 'http://localhost:5173', // Allow only this origin
-    methods: ['POST'], // Allow only these methods
+    methods: ['GET', 'POST'], // Allow only these methods
     credentials: true, // Allow cookies to be sent with requests
 };
 
