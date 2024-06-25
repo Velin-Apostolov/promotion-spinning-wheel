@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const routes = require('./routes/routes');
+const cookieParser = require('cookie-parser');
 require('dotenv').config();
 
 const app = express();
@@ -16,6 +17,8 @@ app.use(cors(corsOptions));
 app.use(express.urlencoded({
     extended: false
 }));
+app.use(cookieParser());
+app.use(express.json());
 
 const uri = process.env.MONGODB_URI;
 
