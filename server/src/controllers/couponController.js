@@ -26,7 +26,6 @@ router.post('/promo/add', async (req, res) => {
             expiryDate,
         });
         await coupon.save();
-        res.cookie('promoCode', code, { expires: newDate });
         res.cookie('prizeNumber', prizeNumber, { expires: newDate });
         res.cookie('currentPrize', currentPrize, { expires: newDate });
         res.cookie('hasSpun', hasSpun, { expires: newDate });

@@ -45,6 +45,7 @@ const SpinningWheel = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      console.log('useEffect code', code);
       if (code !== null) {
         const options = {
           method: 'POST',
@@ -66,27 +67,27 @@ const SpinningWheel = () => {
 
           if (data === true) {
             await clearAllCookiesAsync();
-            setCode(null);
             setPrizeNumber(0);
             setCurrentPrize(null);
             setExpiryDate(null);
             setHasSpun(false);
+            setCode(null);
           } else if (data.message == 'Not found!') {
             await clearAllCookiesAsync();
-            setCode(null);
             setPrizeNumber(0);
             setCurrentPrize(null);
             setExpiryDate(null);
             setHasSpun(false);
+            setCode(null);
           }
         } catch (error) {
           console.error('Error: ', error);
           await clearAllCookiesAsync();
-          setCode(null);
           setPrizeNumber(0);
           setCurrentPrize(null);
           setExpiryDate(null);
           setHasSpun(false);
+          setCode(null);
         }
       }
     };
@@ -108,12 +109,14 @@ const SpinningWheel = () => {
     const newExpiryDate = new Date();
     newExpiryDate.setDate(newExpiryDate.getDate() + 14);
     const uniqueCode = nanoid();
-    console.log(uniqueCode);
+    console.log('handlestopSpinning unique code - before setting State', code);
 
-    setCode(uniqueCode);
+    setPrizeNumber(newPrizeNumber => newPrizeNumber);
     setMustSpin(false);
     setCurrentPrize(newCurrentPrize);
     setExpiryDate(newExpiryDate.toISOString());
+
+    console.log('handleStopSpinning unique code after state', code);
 
     const payload = {
       prizeNumber,
@@ -142,6 +145,8 @@ const SpinningWheel = () => {
       const data = await response.json();
 
       console.log('Successful request!');
+      Cookies.set('promoCode', uniqueCode, { expires: 14 });
+      setCode(uniqueCode);
     } catch (error) {
       console.error(error);
     }
@@ -155,6 +160,15 @@ const SpinningWheel = () => {
         data={data}
         onStopSpinning={handleStopSpinning}
         startingOptionIndex={prizeNumber}
+        fontSize={20}
+        outerBorderColor={'#000000'}
+        outerBorderWidth={10}
+        innerBorderColor={'#FFFFFF'}
+        innerBorderWidth={5}
+        radiusLineColor={'#FFFFFF'}
+        radiusLineWidth={2}
+        spinDuration={0.4}
+        backgroundColors={['#FF6F61', '#6B5B95', '#88B04B', '#F7CAC9', '#92A8D1', '#955251', '#B565A7', '#009B77', '#DD4124', '#D65076', '#45B8AC']}
       />
       <button onClick={handleSpinClick} disabled={hasSpun}>SPIN</button>
 
