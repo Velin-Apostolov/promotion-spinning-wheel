@@ -57,7 +57,7 @@ const SpinningWheel = () => {
         };
 
         try {
-          const response = await fetch('http://localhost:5000/promo/check', options);
+          const response = await fetch('https://sleepy-depths-55109-f9277d07b22f.herokuapp.com/promo/check', options);
 
           if (!response.ok) {
             throw new Error('Network response was not ok');
@@ -109,14 +109,11 @@ const SpinningWheel = () => {
     const newExpiryDate = new Date();
     newExpiryDate.setDate(newExpiryDate.getDate() + 14);
     const uniqueCode = nanoid();
-    console.log('handlestopSpinning unique code - before setting State', code);
 
     setPrizeNumber(newPrizeNumber => newPrizeNumber);
     setMustSpin(false);
     setCurrentPrize(newCurrentPrize);
     setExpiryDate(newExpiryDate.toISOString());
-
-    console.log('handleStopSpinning unique code after state', code);
 
     const payload = {
       prizeNumber,
@@ -136,16 +133,21 @@ const SpinningWheel = () => {
     };
 
     try {
-      const response = await fetch('http://localhost:5000/promo/add', options);
+      const response = await fetch('https://sleepy-depths-55109-f9277d07b22f.herokuapp.com/promo/add', options);
 
       if (!response.ok) {
         throw new Error('Network response was not ok:' + response.statusText);
       }
 
       const data = await response.json();
+      const newDate = new Date(expiryDate);
 
       console.log('Successful request!');
       Cookies.set('promoCode', uniqueCode, { expires: 14 });
+      Cookies.set('prizeNumber', data.prizeNumber, { expires: 14 });
+      Cookies.set('hasSpun', data.hasSpun, { expires: 14 });
+      Cookies.set('currentPrize', data.currentPrize, { expires: 14 });
+      Cookies.set('expiryDate', newDate, { expires: 14 });
       setCode(uniqueCode);
     } catch (error) {
       console.error(error);

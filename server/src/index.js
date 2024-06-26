@@ -9,9 +9,9 @@ require('dotenv').config();
 const app = express();
 
 const corsOptions = {
-    origin: 'http://localhost:5173', // Allow only this origin
-    methods: ['GET', 'POST'], // Allow only these methods
-    credentials: true, // Allow cookies to be sent with requests
+    origin: 'https://coco-spinning-wheel.web.app/',
+    methods: ['GET', 'POST'],
+    credentials: true,
 };
 
 const clientPublicPath = path.resolve(__dirname, '../../client/public');
