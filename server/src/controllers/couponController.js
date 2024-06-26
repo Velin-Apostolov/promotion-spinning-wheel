@@ -26,11 +26,7 @@ router.post('/promo/add', async (req, res) => {
             expiryDate,
         });
         await coupon.save();
-        res.cookie('prizeNumber', prizeNumber, { expires: newDate });
-        res.cookie('currentPrize', currentPrize, { expires: newDate });
-        res.cookie('hasSpun', hasSpun, { expires: newDate });
-        res.cookie('expiryDate', expiryDate, { expires: newDate });
-        res.json(coupon);
+        res.json({ code, expiryDate, hasSpun, currentPrize, prizeNumber });
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: 'Internal server error' });
