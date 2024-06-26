@@ -13,6 +13,7 @@ const corsOptions = {
     credentials: true, // Allow cookies to be sent with requests
 };
 
+app.use(express.static('public'));
 app.use(cors(corsOptions));
 app.use(express.urlencoded({
     extended: false
