@@ -16,14 +16,16 @@ const corsOptions = {
 
 const clientPublicPath = path.resolve(__dirname, '../../client/public');
 
-app.use(express.static(clientPublicPath));
 app.use(cors(corsOptions));
+
 app.use((req, res, next) => {
     if (req.path.endsWith('.js')) {
-      res.set('Content-Type', 'application/javascript');
+        res.set('Content-Type', 'application/javascript');
     }
     next();
-  });
+});
+
+app.use(express.static(clientPublicPath));
 app.use(express.urlencoded({
     extended: false
 }));
