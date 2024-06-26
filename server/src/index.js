@@ -13,7 +13,9 @@ const corsOptions = {
     credentials: true, // Allow cookies to be sent with requests
 };
 
-app.use(express.static('public'));
+const clientPublicPath = path.resolve(__dirname, '../../client/public');
+
+app.use(express.static(clientPublicPath));
 app.use(cors(corsOptions));
 app.use(express.urlencoded({
     extended: false
