@@ -18,7 +18,6 @@ router.post('/promo/check', async (req, res) => {
 
 router.post('/promo/add', async (req, res) => {
     const { code, expiryDate, hasSpun, currentPrize, prizeNumber } = req.body;
-    const newDate = new Date(expiryDate);
     try {
         const coupon = new Coupon({
             code,
