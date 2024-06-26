@@ -9,16 +9,13 @@ require('dotenv').config();
 const app = express();
 
 const corsOptions = {
-    origin: 'https://coco-spinning-wheel.web.app/',
+    origin: 'https://coco-spinning-wheel.web.app',
     methods: ['GET', 'POST'],
     credentials: true,
 };
 
-const clientPublicPath = path.resolve(__dirname, '../../client/public');
-
 app.use(cors(corsOptions));
 
-app.use('public', express.static(clientPublicPath));
 app.use(express.urlencoded({
     extended: false
 }));
