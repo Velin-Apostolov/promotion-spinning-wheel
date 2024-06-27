@@ -32,4 +32,16 @@ router.post('/promo/add', async (req, res) => {
     }
 });
 
+router.post('/admin/check', async (req, res) => {
+    const { code } = req.body;
+    try {
+        const coupon = await Coupon.findOne({ code });
+        if (!coupon) { return res.json({ message: 'Coupon not found!' }) };
+        res.json(coupon);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 module.exports = router;
