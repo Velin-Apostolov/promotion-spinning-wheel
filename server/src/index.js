@@ -9,7 +9,7 @@ require('dotenv').config();
 const app = express();
 
 const corsOptions = {
-    origin: 'http://localhost:5173',
+    origin: 'https://coco-spinning-wheel.web.app',
     methods: ['GET', 'POST', 'PUT'],
     credentials: true,
 };
