@@ -45,7 +45,6 @@ const SpinningWheel = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      console.log('useEffect code', code);
       if (code !== null) {
         const options = {
           method: 'POST',
@@ -140,7 +139,8 @@ const SpinningWheel = () => {
       }
 
       const data = await response.json();
-      const newDate = new Date(expiryDate);
+      const newDate = new Date(data.expiryDate);
+      console.log(newDate);
 
       console.log('Successful request!');
       Cookies.set('promoCode', uniqueCode, { expires: 14 });
