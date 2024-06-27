@@ -35,7 +35,7 @@ router.post('/promo/add', async (req, res) => {
 router.post('/admin/check', async (req, res) => {
     const { code } = req.body;
     if (!code || code.trim() === '') {
-        return res.status(400).json({ message: 'Coupon code cannot be empty' });
+        return res.json({ message: 'Coupon code cannot be empty' });
     }
     try {
         const coupon = await Coupon.findOne({ couponCode });
