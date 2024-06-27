@@ -33,8 +33,7 @@ router.post('/promo/add', async (req, res) => {
 });
 
 router.post('/admin/check', async (req, res) => {
-    const { code } = req.body;
-    console.log(code);
+    const couponCode = req.body;
     try {
         const coupon = await Coupon.findOne({ code });
         if (!coupon) { return res.json({ message: `Coupon not found - ${code}` }) };
