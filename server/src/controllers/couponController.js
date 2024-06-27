@@ -38,8 +38,8 @@ router.post('/admin/check', async (req, res) => {
         return res.status(400).json({ message: 'Coupon code cannot be empty' });
     }
     try {
-        const coupon = await Coupon.findOne({ couponCode });
-        if (!coupon) { return res.json({ message: `Coupon not found - ${couponCode}` }) };
+        const coupon = await Coupon.findOne({ code });
+        if (!coupon) { return res.json({ message: `Coupon not found - ${code}` }) };
         res.json(coupon);
     } catch (error) {
         console.log(error);
