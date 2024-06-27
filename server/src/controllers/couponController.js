@@ -47,4 +47,22 @@ router.post('/admin/check', async (req, res) => {
     }
 });
 
+router.put('/promo/use', async (req, res) => {
+    const { couponData } = req.body;
+    try {
+        const coupon = await Coupon.findOne({ code: couponData.code });
+        if (!coupon) {
+            return res.status(400).json({ message: `Coupon not found - ${couponData.code}` });
+        }
+
+        coupon.used = true;
+        await coupon.save();
+
+        res.json({ message: 'Successfully marked as used!' });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 module.exports = router;
