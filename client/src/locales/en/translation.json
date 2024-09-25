@@ -1,0 +1,31 @@
+{
+  "options": {
+    "free_coffee": "Free coffee",
+    "free_pasta": "Free pasta",
+    "free_cola": "Free cola"
+  },
+  "title": "Congratulations!",
+  "won": "You've won:",
+  "check_code": "Check the code below and enjoy your prize!",
+  "close": "Close",
+  "free_coffee": "Free coffee",
+  "free_pasta": "Free pasta",
+  "free_cola": "Free cola",
+  "spin": "SPIN",
+  "expires_on": "Expires on",
+  "promo_code": "Promo Code",
+  "admin_panel": "Admin Panel",
+  "enter_coupon_code": "Enter coupon code",
+  "check_coupon": "Check Coupon",
+  "prize": "Prize",
+  "expiry_date": "Expiry Date",
+  "used": "Used",
+  "yes": "Yes",
+  "no": "No",
+  "mark_as_used": "Mark as Used",
+  "admin_login": "Admin Login",
+  "username": "Username",
+  "password": "Password",
+  "login": "Login",
+  "invalid_credentials": "Invalid credentials!"
+}

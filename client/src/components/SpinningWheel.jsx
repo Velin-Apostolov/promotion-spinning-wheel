@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Wheel } from 'react-custom-roulette';
 import Cookies from 'js-cookie';
-import { customAlphabet } from 'nanoid'
-
-const data = [
-  { option: 'Free coffee' },
-  { option: 'Free pasta' },
-  { option: 'Free cola' },
-];
+import { customAlphabet } from 'nanoid';
+import Confetti from 'react-confetti';
+import MyModal from './Modal';
+import { useTranslation } from 'react-i18next';
 
 const alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
@@ -21,6 +18,14 @@ const clearAllCookiesAsync = async () => {
 const nanoid = customAlphabet(alphabet, 6);
 
 const SpinningWheel = () => {
+  const { t } = useTranslation();
+
+  const data = [
+    { option: t('options.free_coffee') },
+    { option: t('options.free_pasta') },
+    { option: t('options.free_cola') },
+  ];
+
   const [mustSpin, setMustSpin] = useState(false);
   const [prizeNumber, setPrizeNumber] = useState(() => {
     const currentPrize = Cookies.get('prizeNumber');
@@ -42,6 +47,7 @@ const SpinningWheel = () => {
     const storedCode = Cookies.get('promoCode');
     return storedCode || null;
   })
+  const [showPopup, setShowPopup] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -140,15 +146,14 @@ const SpinningWheel = () => {
 
       const data = await response.json();
       const newDate = new Date(data.expiryDate);
-      console.log(newDate);
 
-      console.log('Successful request!');
       Cookies.set('promoCode', uniqueCode, { expires: 14 });
       Cookies.set('prizeNumber', data.prizeNumber, { expires: 14 });
       Cookies.set('hasSpun', data.hasSpun, { expires: 14 });
       Cookies.set('currentPrize', data.currentPrize, { expires: 14 });
       Cookies.set('expiryDate', newDate, { expires: 14 });
       setCode(uniqueCode);
+      setShowPopup(true);
     } catch (error) {
       console.error(error);
     }
@@ -163,6 +168,7 @@ const SpinningWheel = () => {
         onStopSpinning={handleStopSpinning}
         startingOptionIndex={prizeNumber}
         fontSize={20}
+        textDistance={50}
         outerBorderColor={'#000000'}
         outerBorderWidth={10}
         innerBorderColor={'#FFFFFF'}
@@ -172,7 +178,18 @@ const SpinningWheel = () => {
         spinDuration={0.4}
         backgroundColors={['#FF6F61', '#6B5B95', '#88B04B', '#F7CAC9', '#92A8D1', '#955251', '#B565A7', '#009B77', '#DD4124', '#D65076', '#45B8AC']}
       />
-      <button onClick={handleSpinClick} disabled={hasSpun}>SPIN</button>
+      <button onClick={handleSpinClick} disabled={hasSpun}>{t('spin')}</button>
+
+      {showPopup && (
+        <>
+          <MyModal
+            prize={currentPrize}
+            handleClose={() => setShowPopup(false)}
+            isOpen={showPopup}
+          />
+          <Confetti />
+        </>
+      )}
 
       {hasSpun && (
         <>
